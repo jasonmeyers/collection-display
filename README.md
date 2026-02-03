@@ -1,8 +1,11 @@
 # collection-display
 Create a simple App/Script/Component to consume, clean and display data from a RESTful API or APIs
 
+## Installation
+ 
+To install, run: ```yarn install```
 
-# React + TypeScript + Vite
+## React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
