@@ -24,8 +24,6 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
-flex-flow: column wrap;
   min-width: 320px;
   min-height: 100vh;
   border: 1px solid #333
@@ -68,11 +66,34 @@ button:focus-visible {
   }
 }
 
-
-.record-card {
+.card-container {
   display: flex;
-  flex-direction: column;
-  border: 1px solid #999;
-  margin: 5px;
-  max-width: 300px;
+  flex-flow: row wrap;
+  background-color: #444;
+  .record-card {
+    display: flex;
+    flex-direction: column;
+    margin: 5px;
+    width: 300px;
+    max-width: 300px;
+    padding: 2rem 1rem;
+    color: #999;
+    border-radius: 10px;
+    background-color: #333;
+    .placeholder-image {
+      background-color: #000;
+      opacity: 0.01;
+      background-blend-mode: multiply;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: inline;
+      li {
+        padding-left: 10px;
+        display: inline;
+      }
+    }
+  }
 }

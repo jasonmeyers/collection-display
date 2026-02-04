@@ -1,43 +1,17 @@
 import { useState, useEffect } from "react";
+import PlaceHolder from "./assets/react.svg";
+import { normalizeCollection } from "./utilities/normalize";
+import type { NormalizedRecord, RawRecord } from "./types/types";
 
 const apiURL = "/dataset.json";
 
-interface RawRecord {
-  title: string | null;
-  creator: string | string[] | null;
-  object_id: string;
-}
-
-interface NormalizedRecord {
-  title: string | null;
-  creator: string[];
-  object_id: string;
-}
-
-function normalizeCollection(arr: RawRecord[]): NormalizedRecord[] {
-  return arr.map((item: RawRecord) => {
-    return {
-      title: item.title,
-      creator: normalizeCreator(item.creator),
-      object_id: item.object_id,
-    };
-  });
-}
-
-function normalizeCreator(creator: string | string[] | null): string[] {
-  if (!creator) {
-    return ["Unknown"];
-  } else if (typeof creator === "string") {
-    return [creator];
-  }
-  return creator;
-}
-
 function App() {
   const [isLoading, setIsLoading] = useState(false);
+  const [rawCollectionData, setRawCollectionData] = useState<RawRecord[]>([]);
   const [normalizedCollectionData, setNormalizedCollectionData] = useState<
     NormalizedRecord[]
   >([]);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadData() {
@@ -45,33 +19,52 @@ function App() {
         setIsLoading(true);
         const response = await fetch(apiURL, {});
         const data = await response.json();
+        setRawCollectionData(data.records);
         setNormalizedCollectionData(normalizeCollection(data.records));
-      } catch (err) {
-        console.error(err);
+      } catch {
+        setError("Failed to load collection");
       } finally {
         setIsLoading(false);
       }
     }
     loadData();
   }, []);
-
   return (
     <>
-      {isLoading
-        ? "Loading..."
-        : normalizedCollectionData.map(({ title, creator, object_id }) => (
-            <div className="record-card" key={object_id}>
-              <h2>{title || "***Title Not Provided***"}</h2>
-              <div>object id: {object_id}</div>
-
-              <div>
-                Created By:
-                {creator.map((item) => (
-                  <div>{item}</div>
-                ))}
-              </div>
-            </div>
-          ))}
+      <div className="card-container">
+        {!error || error}
+        {isLoading
+          ? "Loading..."
+          : normalizedCollectionData.map(
+              ({ title, creator, object_id, date }) => (
+                <a
+                  href={`path-to-item/${object_id}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                  }}
+                  className="record-card"
+                  key={object_id}
+                >
+                  <img src={PlaceHolder} alt="" className="placeholder-image" />
+                  <h2>
+                    {title || "No Title"}
+                    <span className="date">, {date && date}</span>
+                  </h2>
+                  {creator && (
+                    <>
+                      Created by:{" "}
+                      <ul>
+                        {creator.map((item: string, i) => (
+                          <li key={i}>{item}</li>
+                        ))}
+                      </ul>
+                    </>
+                  )}
+                </a>
+              ),
+            )}
+        <div className="dashboard">{rawCollectionData.length}</div>
+      </div>
     </>
   );
 }
