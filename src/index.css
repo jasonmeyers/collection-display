@@ -25,10 +25,10 @@ a:hover {
 body {
   margin: 0;
   display: flex;
-  place-items: flex-start;
+flex-flow: column wrap;
   min-width: 320px;
   min-height: 100vh;
-  padding: 2rem 20rem 0;
+  border: 1px solid #333
 }
 
 h1 {
@@ -66,4 +66,13 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+
+
+.record-card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #999;
+  margin: 5px;
+  max-width: 300px;
 }
