@@ -1,4 +1,4 @@
-import type { RawRecord, NormalizedRecord } from "../types/types";
+import type { RawRecord, NormalizedRecord, DateObject } from "../types/types";
 
 export function normalizeCollection(arr: RawRecord[]): NormalizedRecord[] {
   return arr.map((item: RawRecord) => ({
@@ -12,7 +12,7 @@ export function normalizeCollection(arr: RawRecord[]): NormalizedRecord[] {
 export function normalizeDate(
   date:
     | string
-    | { display: string | null; earliest: string | null; latest: string | null }
+    | DateObject
     | number 
     | null 
     | undefined,

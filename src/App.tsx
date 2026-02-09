@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
-import PlaceHolder from "./assets/react.svg";
 import { normalizeCollection } from "./utilities/normalize";
+
 import type { NormalizedRecord, RawRecord } from "./types/types";
+import DropDown from "./components/DropDown";
+import Dashboard from "./components/Dashboard";
 
 const apiURL = "/dataset.json";
 
@@ -12,6 +14,7 @@ function App() {
     NormalizedRecord[]
   >([]);
   const [error, setError] = useState<string | null>(null);
+  const [selectedMaterial, setSelectedMaterial] = useState("");
 
   useEffect(() => {
     async function loadData() {
@@ -21,16 +24,38 @@ function App() {
         const data = await response.json();
         setRawCollectionData(data.records);
         setNormalizedCollectionData(normalizeCollection(data.records));
-      } catch {
+      } catch (e) {
+        console.error(e);
         setError("Failed to load collection");
       } finally {
         setIsLoading(false);
       }
     }
     loadData();
-  }, []);
+  }, [error]);
+
+  const uniqueMaterials = (data, category: string) =>
+    new Set(
+      data.flatMap((item: []) => {
+        if (!item[category]) {
+          return []; //??
+        }
+        return item[category];
+      }),
+    );
+
   return (
     <>
+      <div className="filters">
+        <DropDown
+          label="materials"
+          options={[...uniqueMaterials(rawCollectionData, "materials")]}
+          value={selectedMaterial}
+          onChange={setSelectedMaterial}
+        />
+
+        <Dashboard data={rawCollectionData} />
+      </div>
       <div className="card-container">
         {!error || error}
         {isLoading
@@ -45,10 +70,9 @@ function App() {
                   className="record-card"
                   key={object_id}
                 >
-                  <img src={PlaceHolder} alt="" className="placeholder-image" />
                   <h2>
                     {title || "No Title"}
-                    <span className="date">, {date && date}</span>
+                    <span className="date"> {date && date}</span>
                   </h2>
                   {creator && (
                     <>
@@ -63,7 +87,6 @@ function App() {
                 </a>
               ),
             )}
-        <div className="dashboard">{rawCollectionData.length}</div>
       </div>
     </>
   );

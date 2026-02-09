@@ -1,7 +1,6 @@
 import { useState } from "react";
 
 const metAPI = "https://collectionapi.metmuseum.org/public/collection/v1/";
-
 const BATCH_SIZE = 20; // Limit batch size based on APIs limit of 80 requests/second
 
 interface CollectionItem {
