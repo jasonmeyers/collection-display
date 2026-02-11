@@ -17,3 +17,23 @@ export interface DateObject {
   earliest: string | null;
   latest: string | null;
 }
+
+ interface TitleArtist {
+  title: string;
+  artist_display: string | null;
+ }
+
+
+export interface RawEntry extends TitleArtist  {
+  id: string;
+  date_display: string | null;
+  main_reference_number: string | null;
+  description: string | null;
+}
+
+export interface ArtworkDetail extends TitleArtist {
+  image_id: string | null;
+  thumbnail: { alt_text: string } | null;
+}
+
+export type Status = 'idle' | 'loading' | 'success' | 'error';

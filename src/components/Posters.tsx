@@ -1,24 +1,16 @@
 import { useState, useEffect } from "react";
+import Dialog from "./Dialog";
+import type { RawEntry } from "../types/types";
 
 const apiUrl = "https://api.artic.edu/api/v1/artworks";
 const fields = "id,title,artist_display,date_display,main_reference_number";
 const limits = "?page=1&limit=80";
-// https://api.artic.edu/api/v1/artworks/129884
-// const basicEntry = "/chicago.json";
-
-interface RawEntry {
-  id: string;
-  title: string;
-  artist_display: string | null;
-  date_display: string | null;
-  main_reference_number: string | null;
-  description: string | null;
-}
 
 function Posters() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [rawResponse, setRawResponse] = useState<RawEntry[] | null>(null);
+  const [selectedUrl, setSelectedUrl] = useState<string | null>(null);
 
   useEffect(() => {
     async function getResponse(url: string): Promise<unknown> {
@@ -38,7 +30,7 @@ function Posters() {
         setLoading(false);
       }
     }
-    getResponse(apiUrl);
+    getResponse(`${apiUrl}?${fields}${limits}`);
   }, []);
 
   return (
@@ -48,9 +40,13 @@ function Posters() {
         {Array.isArray(rawResponse) &&
           rawResponse.map((entry: RawEntry) => (
             <a
-              href={apiUrl + "?fields=" + fields + limits}
+              href={`${apiUrl}/${entry.id}`}
               key={entry.id}
               className="record-card"
+              onClick={(e) => {
+                e.preventDefault();
+                setSelectedUrl(`${apiUrl}/${entry.id}`);
+              }}
             >
               <div>
                 <h3>{entry.title}</h3>
@@ -59,6 +55,7 @@ function Posters() {
             </a>
           ))}
       </div>
+      <Dialog objectUrl={selectedUrl} onClose={() => setSelectedUrl(null)} />
     </>
   );
 }
