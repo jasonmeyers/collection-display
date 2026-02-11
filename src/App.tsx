@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import PlaceHolder from "./assets/react.svg";
 import { normalizeCollection } from "./utilities/normalize";
 import type { NormalizedRecord, RawRecord } from "./types/types";
-
+import Posters from "./components/Posters";
 const apiURL = "/dataset.json";
 
 function App() {
@@ -29,8 +29,10 @@ function App() {
     }
     loadData();
   }, []);
+
   return (
     <>
+      <Posters />
       <div className="card-container">
         {!error || error}
         {isLoading

@@ -1,4 +1,5 @@
-import type { RawRecord, NormalizedRecord } from "../types/types";
+import type { RawRecord, NormalizedRecord, DateObject } from "../types/types";
+
 
 export function normalizeCollection(arr: RawRecord[]): NormalizedRecord[] {
   return arr.map((item: RawRecord) => ({
@@ -9,44 +10,35 @@ export function normalizeCollection(arr: RawRecord[]): NormalizedRecord[] {
   }));
 }
 
-export function normalizeDate(
-  date:
-    | string
-    | { display: string | null; earliest: string | null; latest: string | null }
-    | number 
-    | null 
-    | undefined,
-) {
-  if (date == null) {
-    return "";
-  }
-  if (typeof date === "string") {
-    if (date === "unknown") {
-      return "";
-    }
+export function normalizeDate(date: string | DateObject | number | null | undefined) {
+  if (typeof date == "string") {
     return date;
   }
-  if (typeof date === "number") {
+  if (typeof date == "number") {
     return String(date);
   }
-  if (date.display && date.display !== "unknown") {
+  if (date == null) {
+    return "date unknown";
+  }
+  if (typeof date == "object") {
     return date.display;
   }
-  if (date.earliest != null) {
-    return date.earliest;
-  }
-  return "";
 }
 
-function normalizeCreator(creator: string | string[] | null | undefined){
-  if(creator == null || creator.length === 0 || creator === "" || creator === "unknown" || creator === "Unknown"){
+function normalizeCreator(creator: string | string[] | null | undefined) {
+  if (
+    creator == null ||
+    creator.length == 0 ||
+    creator === "" ||
+    creator === "unknown" ||
+    creator === "Unknown"
+  ) {
     return null;
   }
-  if(Array.isArray(creator) && creator[0] == "Unknown"){
+  if (Array.isArray(creator) && creator[0] == "Unknown") {
     return null;
   }
-  if(typeof creator === 'string'){
+  if (typeof creator === "string") {
     return [creator];
-  }
-  else return creator;
+  } else return creator;
 }
